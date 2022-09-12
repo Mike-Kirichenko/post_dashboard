@@ -1,0 +1,24 @@
+type Query {
+  post(id: ID!): Post
+  posts: [Post] #specifying returned data type, in this case its custom
+}
+
+type Post {
+  id: ID! #ID! - means that id will type of ID and it's value can't be null
+  title: String!
+  text: String!
+  userId: ID!
+  categoryID: ID!
+}
+
+type Category {
+  id: ID! #ID! - means that id will type of ID and it's value can't be null
+  title: String!
+}
+
+type User {
+  id: ID!
+  nickname: String!
+  password: String!
+  email: String!
+}
