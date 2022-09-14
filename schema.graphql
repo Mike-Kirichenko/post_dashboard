@@ -1,19 +1,22 @@
 type Query {
+  user(id: ID!): User
   post(id: ID!): Post
-  posts: [Post] #specifying returned data type, in this case its custom
+  posts(page: Int, dateFrom: String, dateTo: String): [Post] #specifying returned data type, in this case its custom
 }
 
 type Post {
   id: ID! #ID! - means that id will type of ID and it's value can't be null
-  title: String!
+  title: String
   text: String!
   userId: ID!
   categoryID: ID!
+  user: User!
+  category: Category!
 }
 
 type Category {
   id: ID! #ID! - means that id will type of ID and it's value can't be null
-  title: String!
+  name: String!
 }
 
 type User {
