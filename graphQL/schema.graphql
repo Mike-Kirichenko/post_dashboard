@@ -16,7 +16,7 @@ type Post {
   userId: ID!
   categoryId: ID!
   user: User
-  category: Category!
+  category: Category
 }
 
 type Category {
