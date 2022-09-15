@@ -1,12 +1,12 @@
 const { Op } = require("sequelize");
-const db = require("./db/models");
+const db = require("../db/models");
 
 const Query = {
   post: (root, { id }, context) => {
     const { id: userId } = context.user;
     return db.Post.findOne({
       where: { userId, id },
-      include: [{ model: db.User }, { model: db.Category }]
+      include: [{ model: db.User }, { model: db.Category }],
     });
   },
   posts: (root, { page, dateFrom, dateTo }, context) => {
@@ -21,14 +21,25 @@ const Query = {
     }
 
     const whereObj = {
-      createdAt: { [Op.between]: [dateFrom || 0, dateTo || Infinity] }
+      createdAt: { [Op.between]: [dateFrom || 0, dateTo || Infinity] },
     };
 
     (queryObj.where = { userId, ...whereObj }),
       (queryObj.include = [{ model: db.User }, { model: db.Category }]);
 
     return db.Post.findAll(queryObj);
-  }
+  },
 };
 
-module.exports = { Query };
+const Mutation = {
+  createPost: async (root, { input }, context) => {
+    const { id: userId } = context.user;
+    const { id } = await db.Post.create({ ...input, userId });
+    return await db.Post.findOne({
+      where: { userId, id },
+      include: [{ model: db.User }, { model: db.Category }],
+    });
+  },
+};
+
+module.exports = { Query, Mutation };

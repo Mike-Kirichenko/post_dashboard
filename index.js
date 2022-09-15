@@ -10,7 +10,7 @@ const { conn } = require("./db/config");
 const { User, Category, Post } = require("./db/models");
 const verifyToken = require("./verifyToken");
 const { login } = require("./auth");
-const resolvers = require("./resolvers");
+const resolvers = require("./graphQL/resolvers");
 const app = express();
 
 const start = async () => {
@@ -28,14 +28,12 @@ start();
 
 const startApollo = async () => {
   const typeDefs = gql(
-    fs.readFileSync("./schema.graphql", { encoding: "utf-8" })
+    fs.readFileSync("./graphQL/schema.graphql", { encoding: "utf-8" })
   );
-
-  const context = ({ req }) => verifyToken(req);
   const apolloServer = new ApolloServer({
     typeDefs,
     resolvers,
-    context,
+    context: ({ req }) => verifyToken(req),
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
   });
   await apolloServer.start();

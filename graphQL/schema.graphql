@@ -4,13 +4,18 @@ type Query {
   posts(page: Int, dateFrom: String, dateTo: String): [Post] #specifying returned data type, in this case its custom
 }
 
+type Mutation {
+  createPost(input: CreatePostInput): Post
+}
+
 type Post {
   id: ID! #ID! - means that id will type of ID and it's value can't be null
   title: String
   text: String!
+  createdAt: String
   userId: ID!
-  categoryID: ID!
-  user: User!
+  categoryId: ID!
+  user: User
   category: Category!
 }
 
@@ -24,4 +29,10 @@ type User {
   nickname: String!
   password: String!
   email: String!
+}
+
+input CreatePostInput {
+  categoryId: ID!
+  title: String!
+  text: String!
 }
