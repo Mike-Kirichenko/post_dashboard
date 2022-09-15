@@ -7,7 +7,6 @@ const {
 const { ApolloServer, gql } = require("apollo-server-express");
 const cors = require("cors");
 const { conn } = require("./db/config");
-const { User, Category, Post } = require("./db/models");
 const verifyToken = require("./verifyToken");
 const { login } = require("./auth");
 const resolvers = require("./graphQL/resolvers");
@@ -16,7 +15,6 @@ const app = express();
 const start = async () => {
   try {
     await conn.authenticate();
-    await conn.sync();
     app.listen(process.env.PORT);
     console.log(`Server started on port ${process.env.PORT}`);
   } catch (error) {

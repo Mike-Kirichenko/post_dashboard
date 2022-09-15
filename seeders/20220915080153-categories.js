@@ -1,7 +1,7 @@
 "use strict";
 const faker = require("faker");
 
-const categories = [...Array(100)].map((category) => ({
+const categories = [...Array(12)].map((category) => ({
   name: faker.lorem.sentence(1),
 }));
 module.exports = {
