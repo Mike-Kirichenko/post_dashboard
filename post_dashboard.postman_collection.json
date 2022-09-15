@@ -1,0 +1,138 @@
+{
+	"info": {
+		"_postman_id": "9b1a208a-f46c-488b-a6e8-a701b6e31cef",
+		"name": "post_dashboard",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19123019"
+	},
+	"item": [
+		{
+			"name": "get-all-users-posts",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJNYXJpYW5hOTZAeWFob28uY29tIiwiaWF0IjoxNjYzMjU0MzYxLCJleHAiOjE2NjMzNDA3NjF9.AjnUNA3Ably66TvwAwYg7BhIOAf9EtsD4PWz81rDO9I",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query PostsQuery ($page: Int, $dateFrom: String, $dateTo: String) {\n    posts(page: $page, dateFrom: $dateFrom, dateTo: $dateTo) {\n        id\n        title\n        text\n        createdAt\n        category {\n           name\n        }\n        user {\n           nickname\n        }\n    }\n}",
+						"variables": "{\n    \"dateFrom\": \"2022-10-01 00:00\",\n    \"dateTo\": \"2022-10-28: 00:00\"\n}"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user-login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"login\": \"Asa_Kutch\",\n    \"password\": \"password123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user-single-post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJCaWxseV9Db3JtaWVyNkB5YWhvby5jb20iLCJpYXQiOjE2NjMyMzM2NzIsImV4cCI6MTY2MzMyMDA3Mn0.gvbOf_fDBJSUQoS4FnJMkpQD1jEwyOKlLLMbelbyNn8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query PostQuery($id: ID!) {\n    post (id: $id) {\n        title\n        text\n        category {\n           id\n           name\n        }\n        user {\n           nickname\n        }\n    }\n}",
+						"variables": "{\"id\": 2}"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create-post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJCaWxseV9Db3JtaWVyNkB5YWhvby5jb20iLCJpYXQiOjE2NjMyMzM2NzIsImV4cCI6MTY2MzMyMDA3Mn0.gvbOf_fDBJSUQoS4FnJMkpQD1jEwyOKlLLMbelbyNn8",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation CreatePost ($input: CreatePostInput){\n    post: createPost(input: $input) {\n      title\n      text\n      category {\n          name\n      }\n      user {\n          nickname\n      }\n    }\n  }",
+						"variables": "{\n    \"input\": {\n        \"categoryId\": 85,\n        \"title\": \"a\",\n        \"text\": \"T\"\n    }\n}"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

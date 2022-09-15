@@ -22,11 +22,11 @@ const Query = {
 
     const whereObj = {
       createdAt: { [Op.between]: [dateFrom || 0, dateTo || Infinity] },
+      userId,
     };
 
-    (queryObj.where = { userId, ...whereObj }),
-      (queryObj.include = [{ model: db.User }, { model: db.Category }]);
-
+    queryObj.where = whereObj;
+    queryObj.include = [{ model: db.User }, { model: db.Category }];
     return db.Post.findAll(queryObj);
   },
 };
