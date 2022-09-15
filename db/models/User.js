@@ -9,7 +9,7 @@ module.exports = (conn, DataTypes) => {
       },
       firstName: { type: DataTypes.STRING, allowNull: false },
       lastName: { type: DataTypes.STRING, allowNull: false },
-      nickname: { type: DataTypes.STRING, allowNull: false },
+      nickname: { type: DataTypes.STRING, unique: true, allowNull: false },
       email: { type: DataTypes.STRING, unique: true, allowNull: false },
       password: { type: DataTypes.STRING, allowNull: false },
     },

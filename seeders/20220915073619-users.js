@@ -7,7 +7,7 @@ const users = [...Array(100)].map((user) => ({
   lastName: faker.name.lastName(),
   email: faker.internet.email(),
   nickname: faker.internet.userName(),
-  password: bcrypt.hashSync(faker.internet.password(8), 10),
+  password: bcrypt.hashSync("password123", 10),
 }));
 module.exports = {
   up: (queryInterface, Sequelize) => {

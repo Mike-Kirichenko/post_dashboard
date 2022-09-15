@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { User } = require("./db/models");
@@ -5,19 +6,19 @@ const { SECRET_KEY } = process.env;
 
 const genToken = (tokenParams) => {
   const token = jwt.sign(tokenParams, SECRET_KEY, {
-    expiresIn: "24h"
+    expiresIn: "24h",
   });
   return token;
 };
 
 module.exports.login = async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password)
+  const { login, password } = req.body;
+  if (!login || !password)
     return res.status(422).send({ msg: "All inputs required" });
 
   try {
     const foundUser = await User.findOne({
-      where: { email }
+      where: { [Op.or]: [{ email: login }, { nickname: login }] },
     });
 
     if (foundUser) {
