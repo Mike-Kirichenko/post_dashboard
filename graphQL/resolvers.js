@@ -48,14 +48,17 @@ const Mutation = {
   },
   editPost: async (root, { id, input }, context) => {
     const { id: userId } = context.user;
-    const [updated] = await db.Post.update(input, { where: { id, userId } });
-    if (updated) {
-      const updated = await db.Post.findOne({
-        where: { userId, id },
-        include: [{ model: db.User }, { model: db.Category }],
-      });
-      return updated;
+    if (input) {
+      const [updated] = await db.Post.update(input, { where: { id, userId } });
+      if (updated) {
+        const updated = await db.Post.findOne({
+          where: { userId, id },
+          include: [{ model: db.User }, { model: db.Category }],
+        });
+        return updated;
+      }
     }
+    return null;
   },
 };
 

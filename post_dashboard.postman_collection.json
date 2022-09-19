@@ -21,7 +21,7 @@
 					"mode": "graphql",
 					"graphql": {
 						"query": "query PostsQuery ($page: Int, $dateFrom: String, $dateTo: String) {\n    posts(page: $page, dateFrom: $dateFrom, dateTo: $dateTo) {\n        id\n        title\n        text\n        createdAt\n        category {\n           name\n        }\n        user {\n           nickname\n        }\n    }\n}",
-						"variables": "{\n    \"dateFrom\": \"2022-10-01 00:00\",\n    \"dateTo\": \"2022-10-28: 00:00\"\n}"
+						"variables": "{\n   \"page\": 1\n}"
 					}
 				},
 				"url": {
@@ -117,6 +117,72 @@
 					"graphql": {
 						"query": "mutation CreatePost ($input: CreatePostInput){\n    post: createPost(input: $input) {\n      title\n      text\n      category {\n          name\n      }\n      user {\n          nickname\n      }\n    }\n  }",
 						"variables": "{\n    \"input\": {\n        \"categoryId\": 85,\n        \"title\": \"a\",\n        \"text\": \"T\"\n    }\n}"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete-post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJNYXJpYW5hOTZAeWFob28uY29tIiwiaWF0IjoxNjYzNTcwNDE2LCJleHAiOjE2NjM2NTY4MTZ9.ZC2fjRmVMUG6fIpGC0H0_5AVsQvirZuWcnUn90L1J-M",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation DeletePost ($id: ID!){\n    deleted: deletePost(id: $id)\n  }",
+						"variables": "{\"id\": 21}"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/api/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit-post",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJNYXJpYW5hOTZAeWFob28uY29tIiwiaWF0IjoxNjYzNTcwNDE2LCJleHAiOjE2NjM2NTY4MTZ9.ZC2fjRmVMUG6fIpGC0H0_5AVsQvirZuWcnUn90L1J-M",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation EditPost ($id: ID, $input: EditPostInput){\n    post: editPost(id: $id, input: $input) {\n      title\n      text\n      category {\n          name\n      }\n      user {\n          nickname\n      }\n    }\n}",
+						"variables": "{\n    \"id\": 22\n}"
 					}
 				},
 				"url": {
