@@ -1,6 +1,5 @@
 const { Op } = require("sequelize");
 const db = require("../db/models");
-const Post = require("../db/models/Post");
 
 const Query = {
   post: (root, { id }, context) => {
