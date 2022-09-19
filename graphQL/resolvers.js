@@ -40,6 +40,11 @@ const Mutation = {
       include: [{ model: db.User }, { model: db.Category }],
     });
   },
+  deletePost: async (root, { id }, context) => {
+    const { id: userId } = context.user;
+    const deleted = await db.Post.destroy({ where: { id, userId } });
+    return deleted;
+  },
 };
 
 module.exports = { Query, Mutation };
