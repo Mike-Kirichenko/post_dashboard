@@ -1,5 +1,6 @@
 const { Op } = require("sequelize");
 const db = require("../db/models");
+const Post = require("../db/models/Post");
 
 const Query = {
   post: (root, { id }, context) => {
@@ -44,6 +45,17 @@ const Mutation = {
     const { id: userId } = context.user;
     const deleted = await db.Post.destroy({ where: { id, userId } });
     return deleted;
+  },
+  editPost: async (root, { id, input }, context) => {
+    const { id: userId } = context.user;
+    const [updated] = await db.Post.update(input, { where: { id, userId } });
+    if (updated) {
+      const updated = await db.Post.findOne({
+        where: { userId, id },
+        include: [{ model: db.User }, { model: db.Category }],
+      });
+      return updated;
+    }
   },
 };
 
