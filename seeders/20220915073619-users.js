@@ -1,19 +1,19 @@
-"use strict";
-const faker = require("faker");
-const bcrypt = require("bcrypt");
+'use strict';
+const faker = require('faker');
+const bcrypt = require('bcrypt');
 
-const users = [...Array(60)].map((user) => ({
+const users = [...Array(4)].map((user) => ({
   firstName: faker.name.firstName(),
   lastName: faker.name.lastName(),
   email: faker.internet.email(),
   nickname: faker.internet.userName(),
-  password: bcrypt.hashSync("password123", 10),
+  password: bcrypt.hashSync('password123', 10),
 }));
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.bulkInsert("users", users, {});
+    return queryInterface.bulkInsert('users', users, {});
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete("users", null, {});
+    return queryInterface.bulkDelete('users', null, {});
   },
 };
