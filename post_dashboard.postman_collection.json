@@ -13,15 +13,15 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJNYXJpYW5hOTZAeWFob28uY29tIiwiaWF0IjoxNjYzMjU0MzYxLCJleHAiOjE2NjMzNDA3NjF9.AjnUNA3Ably66TvwAwYg7BhIOAf9EtsD4PWz81rDO9I",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJDb3JkZWxpYTY1QHlhaG9vLmNvbSIsImlhdCI6MTY2MzkzNzM1MCwiZXhwIjoxNjY0MDIzNzUwfQ.IFHUiRSoNEbq9wdPYqfZpPFTfTobr0I9YH8LVC74Ejk",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "query PostsQuery ($page: Int, $dateFrom: String, $dateTo: String) {\n    posts(page: $page, dateFrom: $dateFrom, dateTo: $dateTo) {\n        id\n        title\n        text\n        createdAt\n        category {\n           name\n        }\n        user {\n           nickname\n        }\n    }\n}",
-						"variables": "{\n   \"page\": 1\n}"
+						"query": "query PostsQuery ($page: Int, $dateFrom: String, $dateTo: String) {\n    posts(page: $page, dateFrom: $dateFrom, dateTo: $dateTo) {\n        id\n        title\n        text\n        createdAt\n        updatedAt\n        img\n        category {\n           name\n        }\n        user {\n           firstName\n           lastName\n        }\n    }\n}",
+						"variables": "{\"page\": 1}"
 					}
 				},
 				"url": {
@@ -46,7 +46,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"login\": \"Asa_Kutch\",\n    \"password\": \"password123\"\n}",
+					"raw": "{\n    \"login\": \"Alanis.Emmerich\",\n    \"password\": \"password123\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -116,7 +116,7 @@
 					"mode": "graphql",
 					"graphql": {
 						"query": "mutation CreatePost ($input: CreatePostInput){\n    post: createPost(input: $input) {\n      title\n      text\n      category {\n          name\n      }\n      user {\n          nickname\n      }\n    }\n  }",
-						"variables": "{\n    \"input\": {\n        \"categoryId\": 85,\n        \"title\": \"a\",\n        \"text\": \"T\"\n    }\n}"
+						"variables": "{\n    \"input\": {\n        \"categoryId\": 85,\n        \"title\": \"Lorem Ipsum test title\",\n        \"text\": \"Something About Lorem Ipsum!\"\n    }\n}"
 					}
 				},
 				"url": {
@@ -174,15 +174,15 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJNYXJpYW5hOTZAeWFob28uY29tIiwiaWF0IjoxNjYzNTcwNDE2LCJleHAiOjE2NjM2NTY4MTZ9.ZC2fjRmVMUG6fIpGC0H0_5AVsQvirZuWcnUn90L1J-M",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJTdGVwaG9uNUB5YWhvby5jb20iLCJpYXQiOjE2NjM5MzIzMTgsImV4cCI6MTY2NDAxODcxOH0.BBafk5-JEMVFJI5MVRHxj7j6pO6KgfRMuSyPbgTGMl0",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "mutation EditPost ($id: ID, $input: EditPostInput){\n    post: editPost(id: $id, input: $input) {\n      title\n      text\n      category {\n          name\n      }\n      user {\n          nickname\n      }\n    }\n}",
-						"variables": "{\n    \"id\": 22\n}"
+						"query": "mutation EditPost ($id: ID, $input: EditPostInput){\n    post: editPost(id: $id, input: $input) {\n      title\n      text\n      img\n      category {\n          name\n      }\n      user {\n          nickname\n      }\n    }\n}",
+						"variables": "{\n    \"id\": 9,\n    \"input\": {\n        \"title\": \"Test title 1\",\n        \"text\": \"Test text 1\"\n    }\n}"
 					}
 				},
 				"url": {

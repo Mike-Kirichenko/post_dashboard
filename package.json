@@ -9,6 +9,7 @@
   },
   "keywords": [
     "Node",
+    "Express",
     "Gql",
     "Postgres"
   ],
@@ -16,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "apollo-server": "^3.10.2",
+    "apollo-server-core": "^3.10.2",
     "apollo-server-errors": "^3.3.1",
     "apollo-server-express": "^3.10.2",
     "bcrypt": "^5.0.1",
@@ -24,7 +26,7 @@
     "express": "^4.18.1",
     "express-graphql": "^0.12.0",
     "express-jwt": "^7.7.5",
-    "faker": "^5.5.3",
+    "graphql": "^16.6.0",
     "jsonwebtoken": "^8.5.1",
     "nodemon": "^2.0.19",
     "pg": "^8.8.0",
@@ -33,6 +35,7 @@
     "sequelize-cli": "^6.4.1"
   },
   "devDependencies": {
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "faker": "^5.5.3"
   }
 }

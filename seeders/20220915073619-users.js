@@ -6,6 +6,7 @@ const users = [...Array(4)].map((user) => ({
   firstName: faker.name.firstName(),
   lastName: faker.name.lastName(),
   email: faker.internet.email(),
+  avatar: faker.image.avatar(),
   nickname: faker.internet.userName(),
   password: bcrypt.hashSync('password123', 10),
 }));

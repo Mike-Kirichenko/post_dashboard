@@ -1,6 +1,6 @@
 module.exports = (conn, DataTypes) => {
   const User = conn.define(
-    "users",
+    'users',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -10,6 +10,7 @@ module.exports = (conn, DataTypes) => {
       firstName: { type: DataTypes.STRING, allowNull: false },
       lastName: { type: DataTypes.STRING, allowNull: false },
       nickname: { type: DataTypes.STRING, unique: true, allowNull: false },
+      avatar: { type: DataTypes.STRING, unique: false, allowNull: true },
       email: { type: DataTypes.STRING, unique: true, allowNull: false },
       password: { type: DataTypes.STRING, allowNull: false },
     },

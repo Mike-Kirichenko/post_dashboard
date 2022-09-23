@@ -23,15 +23,16 @@ const posts = [...Array(240)].map((post) => {
     text: faker.lorem.sentence(24),
     categoryId: Math.floor(Math.random() * 12) + 1,
     userId: Math.floor(Math.random() * 4) + 1,
+    img: faker.image.abstract(),
     createdAt: createdAt.toISOString(),
     updatedAt: updatedAt.toISOString(),
   };
 });
 module.exports = {
-  up: (queryInterface, Sequelize) => {
+  up: (queryInterface) => {
     return queryInterface.bulkInsert('posts', posts, {});
   },
-  down: (queryInterface, Sequelize) => {
+  down: (queryInterface) => {
     return queryInterface.bulkDelete('posts', null, {});
   },
 };
