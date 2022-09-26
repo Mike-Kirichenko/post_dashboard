@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 const fs = require('fs');
 const express = require('express');
 const {
@@ -42,4 +43,5 @@ startApollo();
 
 app.use(cors());
 app.use(express.json());
-app.post('/api/login', login);
+app.post('/api/user/login', login);
+app.use(express.static(path.resolve(__dirname, 'uploads')));
