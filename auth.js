@@ -24,10 +24,10 @@ module.exports.login = async (req, res) => {
     if (foundUser) {
       const passwordsMatch = await bcrypt.compare(password, foundUser.password);
       if (passwordsMatch) {
-        const { id, email } = foundUser;
+        const { id, email, firstName, lastName, avatar } = foundUser;
         const token = genToken({ id, email });
         req.user = foundUser;
-        return res.send({ email, token });
+        return res.send({ id, email, firstName, lastName, avatar });
       }
     }
     return res.status(401).send({ msg: "Invalid Credentials" });
