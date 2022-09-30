@@ -27,12 +27,9 @@ const Query = {
     queryObj.where = whereObj;
     queryObj.include = [{ model: db.User }, { model: db.Category }];
 
-    const qty = await db.Post.count({ where: whereObj });
-    const posts = await db.Post.findAll(queryObj);
-
     return {
-      list: posts,
-      qty: qty
+      list: db.Post.findAll(queryObj),
+      qty: db.Post.count({ where: whereObj })
     };
   }
 };
