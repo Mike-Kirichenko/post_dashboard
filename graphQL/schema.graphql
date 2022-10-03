@@ -1,12 +1,12 @@
 type Query {
   user(id: ID!): User
   post(id: ID!): Post
-  posts(page: Int, dateFrom: String, dateTo: String, limit: Int): PostsData #specifying returned data type, in this case its custom
+  posts(page: Int, limit: Int, dateFrom: String, dateTo: String): PostsData #specifying returned data type, in this case its custom
 }
 
 type Mutation {
   createPost(input: CreatePostInput): Post
-  deletePost(id: ID!): Boolean
+  deletePosts(postIds: [ID]): Boolean
   editPost(id: ID, input: EditPostInput): Post
 }
 
@@ -25,7 +25,12 @@ type Post {
   categoryId: ID!
   img: String
   user: User!
-  category: Category!
+  category: Category
+}
+
+type PostsData {
+  list: [Post]
+  qty: Int
 }
 
 type Category {

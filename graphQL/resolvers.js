@@ -9,29 +9,33 @@ const Query = {
       include: [{ model: db.User }, { model: db.Category }]
     });
   },
-  posts: async (root, { page, dateFrom, dateTo, limit = 10 }, context) => {
+
+  posts: (root, { page, limit = 10, dateFrom, dateTo }, context) => {
     const { id: userId } = context.user;
-    const queryObj = {};
+
+    const whereObj = {
+      createdAt: { [Op.between]: [dateFrom || 0, dateTo || Infinity] },
+      userId,
+    };
+
+    const queryObj = {
+      where: whereObj,
+      include: [{ model: db.User }, { model: db.Category }],
+    };
 
     if (page) {
       const offset = page * limit - limit;
       queryObj.limit = limit;
       queryObj.offset = offset;
     }
-
-    const whereObj = {
-      createdAt: { [Op.between]: [dateFrom || 0, dateTo || Infinity] },
-      userId
-    };
-
-    queryObj.where = whereObj;
-    queryObj.include = [{ model: db.User }, { model: db.Category }];
-
-    return {
+    
+    const postsData = {
       list: db.Post.findAll(queryObj),
-      qty: db.Post.count({ where: whereObj })
+      qty: db.Post.count({ where: whereObj }),
     };
-  }
+
+    return postsData;
+  },
 };
 
 const Mutation = {
@@ -43,9 +47,11 @@ const Mutation = {
       include: [{ model: db.User }, { model: db.Category }]
     });
   },
-  deletePost: async (root, { id }, context) => {
+  deletePosts: async (root, { postIds }, context) => {
     const { id: userId } = context.user;
-    const deleted = await db.Post.destroy({ where: { id, userId } });
+    const deleted = await db.Post.destroy({
+      where: { id: { [Op.in]: postIds }, userId },
+    });
     return deleted;
   },
   editPost: async (root, { id, input }, context) => {
