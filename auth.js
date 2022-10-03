@@ -27,7 +27,7 @@ module.exports.login = async (req, res) => {
         const { id, email, firstName, lastName, avatar } = foundUser;
         const token = genToken({ id, email, firstName, lastName, avatar });
         req.user = foundUser;
-        return res.send({ email, token });
+        return res.send({ id, email, firstName, lastName, avatar });
       }
     }
     return res.status(401).send({ msg: 'Invalid Credentials' });

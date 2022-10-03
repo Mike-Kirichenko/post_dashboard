@@ -10,6 +10,11 @@ type Mutation {
   editPost(id: ID, input: EditPostInput): Post
 }
 
+type PostsData {
+  list: [Post]
+  qty: Int
+}
+
 type Post {
   id: ID! #ID! - means that id will type of ID and it's value can't be null
   title: String!

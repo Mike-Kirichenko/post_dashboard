@@ -1,14 +1,15 @@
-const { Op } = require('sequelize');
-const db = require('../db/models');
+const { Op } = require("sequelize");
+const db = require("../db/models");
 
 const Query = {
   post: (root, { id }, context) => {
     const { id: userId } = context.user;
     return db.Post.findOne({
       where: { userId, id },
-      include: [{ model: db.User }, { model: db.Category }],
+      include: [{ model: db.User }, { model: db.Category }]
     });
   },
+
   posts: (root, { page, limit = 10, dateFrom, dateTo }, context) => {
     const { id: userId } = context.user;
 
@@ -27,7 +28,7 @@ const Query = {
       queryObj.limit = limit;
       queryObj.offset = offset;
     }
-
+    
     const postsData = {
       list: db.Post.findAll(queryObj),
       qty: db.Post.count({ where: whereObj }),
@@ -43,7 +44,7 @@ const Mutation = {
     const { id } = await db.Post.create({ ...input, userId });
     return await db.Post.findOne({
       where: { userId, id },
-      include: [{ model: db.User }, { model: db.Category }],
+      include: [{ model: db.User }, { model: db.Category }]
     });
   },
   deletePosts: async (root, { postIds }, context) => {
@@ -60,13 +61,13 @@ const Mutation = {
       if (updated) {
         const updated = await db.Post.findOne({
           where: { userId, id },
-          include: [{ model: db.User }, { model: db.Category }],
+          include: [{ model: db.User }, { model: db.Category }]
         });
         return updated;
       }
     }
     return null;
-  },
+  }
 };
 
 module.exports = { Query, Mutation };
