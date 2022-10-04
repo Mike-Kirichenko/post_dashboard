@@ -1,5 +1,6 @@
 const { Op } = require('sequelize');
 const db = require('../db/models');
+const order = [['createdAt', 'DESC']];
 
 const Query = {
   post: (root, { id }, context) => {
@@ -10,7 +11,8 @@ const Query = {
     });
   },
 
-  posts: (root, { page, limit = 10, dateFrom, dateTo }, context) => {
+  posts: (root, { query }, context) => {
+    const { page, limit, dateFrom, dateTo } = query;
     const { id: userId } = context.user;
 
     const whereObj = {
@@ -21,6 +23,7 @@ const Query = {
     const queryObj = {
       where: whereObj,
       include: [{ model: db.User }, { model: db.Category }],
+      order,
     };
 
     if (page) {
@@ -47,12 +50,32 @@ const Mutation = {
       include: [{ model: db.User }, { model: db.Category }],
     });
   },
-  deletePosts: async (root, { postIds }, context) => {
+  deletePosts: async (root, { query, postIds }, context) => {
     const { id: userId } = context.user;
+    const { limit, page } = query;
+
     const deleted = await db.Post.destroy({
       where: { id: { [Op.in]: postIds }, userId },
     });
-    return deleted;
+
+    if (deleted) {
+      const finalQuery = { limit, offset: page * limit - limit };
+      const totalPostQty = await db.Post.count({ where: { userId } });
+      const totalPages = Math.ceil(totalPostQty / limit);
+
+      if (page > totalPages) finalQuery.offset = (page - 1) * limit - limit;
+
+      const queryRelatedPosts = await db.Post.findAll({
+        where: { userId },
+        ...finalQuery,
+        order,
+      });
+
+      return {
+        list: queryRelatedPosts,
+        qty: totalPostQty,
+      };
+    }
   },
   editPost: async (root, { id, input }, context) => {
     const { id: userId } = context.user;
