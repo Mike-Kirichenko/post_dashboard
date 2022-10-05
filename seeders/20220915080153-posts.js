@@ -7,7 +7,7 @@ const randomDate = (start, end) => {
   return new Date(randMs);
 };
 
-const posts = [...Array(240)].map((post) => {
+const posts = [...Array(800)].map((post) => {
   const createdAt = randomDate(new Date(2017, 0, 1), new Date());
   const updatedAt = randomDate(
     new Date(

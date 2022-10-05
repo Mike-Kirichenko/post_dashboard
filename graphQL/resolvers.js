@@ -14,24 +14,26 @@ const Query = {
   },
 
   posts: (root, { query }, context) => {
-    const { page, limit, dateFrom, dateTo } = query;
     const { id: userId } = context.user;
+    const whereObj = { userId };
+    const queryObj = {};
 
-    const whereObj = {
-      createdAt: { [Op.between]: [dateFrom || 0, dateTo || Infinity] },
-      userId,
-    };
-
-    const queryObj = {
-      where: whereObj,
-      include: [{ model: User }, { model: Category }],
-      order,
-    };
-
-    if (page) {
-      queryObj.limit = limit;
-      queryObj.offset = page * limit - limit;
+    if (query) {
+      const { page, limit, dateFrom, dateTo } = query;
+      whereObj.createdAt = {
+        [Op.between]: [dateFrom || 0, dateTo || Infinity],
+      };
+      if (limit) {
+        queryObj.limit = limit;
+      }
+      if (page) {
+        queryObj.offset = page * limit - limit;
+      }
     }
+
+    queryObj.where = whereObj;
+    queryObj.include = [{ model: User }, { model: Category }];
+    queryObj.order = order;
 
     return {
       list: Post.findAll(queryObj),
