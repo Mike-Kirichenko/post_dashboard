@@ -15,11 +15,11 @@ const Query = {
 
   posts: (root, { query }, context) => {
     const { id: userId } = context.user;
-    const whereObj = { userId };
+    let whereObj = { userId };
     const queryObj = {};
 
     if (query) {
-      const { page, limit, dateFrom, dateTo } = query;
+      const { page, limit, dateFrom, dateTo, search } = query;
       whereObj.createdAt = {
         [Op.between]: [dateFrom || 0, dateTo || Infinity],
       };
@@ -28,6 +28,16 @@ const Query = {
       }
       if (page) {
         queryObj.offset = page * limit - limit;
+      }
+
+      if (search) {
+        whereObj = {
+          ...whereObj,
+          [Op.or]: [
+            { title: { [Op.like]: `%${search}%` } },
+            { text: { [Op.like]: `%${search}%` } },
+          ],
+        };
       }
     }
 

@@ -21,6 +21,7 @@ input QueryObj {
   limit: Int
   dateFrom: String
   dateTo: String
+  search: String
 }
 
 type Post {
