@@ -1,16 +1,11 @@
 require('dotenv').config();
 const path = require('path');
-const fs = require('fs');
 const express = require('express');
-const {
-  ApolloServerPluginLandingPageGraphQLPlayground,
-} = require('apollo-server-core');
-const { ApolloServer, gql } = require('apollo-server-express');
 const cors = require('cors');
 const { conn } = require('./db/config');
-const verifyToken = require('./verifyToken');
 const { login } = require('./auth');
-const resolvers = require('./graphQL/resolvers');
+const { startApollo } = require('./graphQL');
+
 const app = express();
 
 const start = async () => {
@@ -24,22 +19,7 @@ const start = async () => {
 };
 
 start();
-
-const startApollo = async () => {
-  const typeDefs = gql(
-    fs.readFileSync('./graphQL/schema.graphql', { encoding: 'utf-8' })
-  );
-  const apolloServer = new ApolloServer({
-    typeDefs,
-    resolvers,
-    context: ({ req }) => verifyToken(req),
-    plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
-  });
-  await apolloServer.start();
-  apolloServer.applyMiddleware({ app, path: '/api/graphql' });
-};
-
-startApollo();
+startApollo(app);
 
 app.use(cors());
 app.use(express.json());

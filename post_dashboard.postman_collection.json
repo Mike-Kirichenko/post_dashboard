@@ -13,24 +13,24 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJDb3JkZWxpYTY1QHlhaG9vLmNvbSIsImlhdCI6MTY2MzkzNzM1MCwiZXhwIjoxNjY0MDIzNzUwfQ.IFHUiRSoNEbq9wdPYqfZpPFTfTobr0I9YH8LVC74Ejk",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJDb3JkZWxpYTY1QHlhaG9vLmNvbSIsImZpcnN0TmFtZSI6Ik1lcmNlZGVzIiwibGFzdE5hbWUiOiJWZXVtIiwiYXZhdGFyIjpudWxsLCJpYXQiOjE2NjQ4Nzg3NjgsImV4cCI6MTY2NDk2NTE2OH0.AX24Fz-h2qTi8I8r0y9dySKtUYqgogiXvlxTOEAMwNE",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "query PostsQuery ($page: Int, $dateFrom: String, $dateTo: String) {\n    posts(page: $page, dateFrom: $dateFrom, dateTo: $dateTo) {\n        id\n        title\n        text\n        createdAt\n        updatedAt\n        img\n        category {\n           name\n        }\n        user {\n           firstName\n           lastName\n        }\n    }\n}",
-						"variables": "{\"page\": 1}"
+						"query": "query PostsQuery($query: QueryObj) {\n  posts(query: $query) {\n    list {\n      id\n      title\n      text\n      createdAt\n      updatedAt\n      img\n      category {\n        name\n      }\n      user {\n        firstName\n        lastName\n      }\n    },\n    qty\n  }\n}\n",
+						"variables": "{\"query\": {\"page\": 1, \"limit\": 25}}"
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/graphql",
+					"raw": "http://localhost:4000/api/graphql",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5000",
+					"port": "4000",
 					"path": [
 						"api",
 						"graphql"
@@ -54,14 +54,15 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/login",
+					"raw": "http://localhost:4000/api/user/login",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5000",
+					"port": "4000",
 					"path": [
 						"api",
+						"user",
 						"login"
 					]
 				}
@@ -135,30 +136,30 @@
 			"response": []
 		},
 		{
-			"name": "delete-post",
+			"name": "delete-posts",
 			"request": {
 				"method": "POST",
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJNYXJpYW5hOTZAeWFob28uY29tIiwiaWF0IjoxNjYzNTcwNDE2LCJleHAiOjE2NjM2NTY4MTZ9.ZC2fjRmVMUG6fIpGC0H0_5AVsQvirZuWcnUn90L1J-M",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJDb3JkZWxpYTY1QHlhaG9vLmNvbSIsImZpcnN0TmFtZSI6Ik1lcmNlZGVzIiwibGFzdE5hbWUiOiJWZXVtIiwiYXZhdGFyIjpudWxsLCJpYXQiOjE2NjQ4Nzg3NjgsImV4cCI6MTY2NDk2NTE2OH0.AX24Fz-h2qTi8I8r0y9dySKtUYqgogiXvlxTOEAMwNE",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "graphql",
 					"graphql": {
-						"query": "mutation DeletePost ($id: ID!){\n    deleted: deletePost(id: $id)\n  }",
-						"variables": "{\"id\": 21}"
+						"query": "mutation DeletePosts ($postIds: [ID], $query: QueryObj){\n    withoutDeleted: deletePosts(postIds: $postIds, query: $query) {\n        list {\n            id\n            title\n            text\n            createdAt\n            updatedAt\n            img\n             category {\n                name\n            }\n            user {\n                firstName\n                lastName\n            }\n        },\n        qty\n        activePage\n    }\n}",
+						"variables": "{\n    \"postIds\": [\n        3561,\n        3530\n    ], \n    \"query\": {\"page\": 1, \"limit\": 25}\n}"
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/graphql",
+					"raw": "http://localhost:4000/api/graphql",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5000",
+					"port": "4000",
 					"path": [
 						"api",
 						"graphql"
