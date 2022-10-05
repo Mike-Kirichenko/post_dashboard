@@ -23,5 +23,5 @@ startApollo(app);
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'uploads')));
 app.post('/api/user/login', login);
-app.use(express.static(path.resolve(__dirname, 'uploads')));

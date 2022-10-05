@@ -1,18 +1,20 @@
+const fs = require('fs');
 const { Op } = require('sequelize');
-const db = require('../db/models');
+const { User, Post, Category } = require('../db/models');
+const imgFolderBase = './uploads';
 const order = [['createdAt', 'DESC']];
 
 const Query = {
   post: (root, { id }, context) => {
     const { id: userId } = context.user;
-    return db.Post.findOne({
+    return Post.findOne({
       where: { userId, id },
-      include: [{ model: db.User }, { model: db.Category }],
+      include: [{ model: User }, { model: Category }],
     });
   },
 
   posts: (root, { query }, context) => {
-    const { page, limit = 10, dateFrom, dateTo } = query;
+    const { page, limit, dateFrom, dateTo } = query;
     const { id: userId } = context.user;
 
     const whereObj = {
@@ -22,7 +24,7 @@ const Query = {
 
     const queryObj = {
       where: whereObj,
-      include: [{ model: db.User }, { model: db.Category }],
+      include: [{ model: User }, { model: Category }],
       order,
     };
 
@@ -32,8 +34,8 @@ const Query = {
     }
 
     return {
-      list: db.Post.findAll(queryObj),
-      qty: db.Post.count({ where: whereObj }),
+      list: Post.findAll(queryObj),
+      qty: Post.count({ where: whereObj }),
     };
   },
 };
@@ -41,39 +43,53 @@ const Query = {
 const Mutation = {
   createPost: async (root, { input }, context) => {
     const { id: userId } = context.user;
-    const { id } = await db.Post.create({ ...input, userId });
-    return await db.Post.findOne({
+    const { id } = await Post.create({ ...input, userId });
+    return await Post.findOne({
       where: { userId, id },
-      include: [{ model: db.User }, { model: db.Category }],
+      include: [{ model: User }, { model: Category }],
     });
   },
   deletePosts: async (root, { query, postIds }, context) => {
     const { id: userId } = context.user;
     const finalQuery = {};
     let activePage;
-    const deleted = await db.Post.destroy({
+
+    const foundRows = await Post.findAll({
+      where: { id: { [Op.in]: postIds }, userId },
+      attributes: ['img'],
+    });
+
+    const deleted = await Post.destroy({
       where: { id: { [Op.in]: postIds }, userId },
     });
 
-    if (deleted) {
-      const totalPostQty = await db.Post.count({ where: { userId } });
+    if (foundRows && deleted) {
+      foundRows.forEach((row) => {
+        const { img: imgPath } = row;
+        if (fs.existsSync(`${imgFolderBase}/${imgPath}`)) {
+          fs.unlinkSync(`${imgFolderBase}/${imgPath}`);
+        }
+      });
+
+      const totalPostQty = await Post.count({ where: { userId } });
 
       if (query) {
-        const { limit = 10, page } = query;
+        const { limit, page } = query;
         activePage = page;
         finalQuery.limit = limit;
         finalQuery.offset = page * limit - limit;
         const totalPages = Math.ceil(totalPostQty / limit);
+
         if (page > 1 && page > totalPages) {
           finalQuery.offset = (page - 1) * limit - limit;
           activePage = page - 1;
         }
       }
 
-      const queryRelatedPosts = await db.Post.findAll({
+      const queryRelatedPosts = await Post.findAll({
         where: { userId },
         ...finalQuery,
-        include: [{ model: db.User }, { model: db.Category }],
+        include: [{ model: User }, { model: Category }],
         order,
       });
 
@@ -87,11 +103,11 @@ const Mutation = {
   editPost: async (root, { id, input }, context) => {
     const { id: userId } = context.user;
     if (input) {
-      const [updated] = await db.Post.update(input, { where: { id, userId } });
+      const [updated] = await Post.update(input, { where: { id, userId } });
       if (updated) {
-        const updated = await db.Post.findOne({
+        const updated = await Post.findOne({
           where: { userId, id },
-          include: [{ model: db.User }, { model: db.Category }],
+          include: [{ model: User }, { model: Category }],
         });
         return updated;
       }
