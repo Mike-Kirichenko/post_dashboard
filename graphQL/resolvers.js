@@ -12,7 +12,7 @@ const Query = {
   },
 
   posts: (root, { query }, context) => {
-    const { page, limit, dateFrom, dateTo } = query;
+    const { page, limit = 10, dateFrom, dateTo } = query;
     const { id: userId } = context.user;
 
     const whereObj = {
@@ -27,17 +27,14 @@ const Query = {
     };
 
     if (page) {
-      const offset = page * limit - limit;
       queryObj.limit = limit;
-      queryObj.offset = offset;
+      queryObj.offset = page * limit - limit;
     }
 
-    const postsData = {
+    return {
       list: db.Post.findAll(queryObj),
       qty: db.Post.count({ where: whereObj }),
     };
-
-    return postsData;
   },
 };
 
@@ -52,28 +49,38 @@ const Mutation = {
   },
   deletePosts: async (root, { query, postIds }, context) => {
     const { id: userId } = context.user;
-    const { limit, page } = query;
-
+    const finalQuery = {};
+    let activePage;
     const deleted = await db.Post.destroy({
       where: { id: { [Op.in]: postIds }, userId },
     });
 
     if (deleted) {
-      const finalQuery = { limit, offset: page * limit - limit };
       const totalPostQty = await db.Post.count({ where: { userId } });
-      const totalPages = Math.ceil(totalPostQty / limit);
 
-      if (page > totalPages) finalQuery.offset = (page - 1) * limit - limit;
+      if (query) {
+        const { limit = 10, page } = query;
+        activePage = page;
+        finalQuery.limit = limit;
+        finalQuery.offset = page * limit - limit;
+        const totalPages = Math.ceil(totalPostQty / limit);
+        if (page > 1 && page > totalPages) {
+          finalQuery.offset = (page - 1) * limit - limit;
+          activePage = page - 1;
+        }
+      }
 
       const queryRelatedPosts = await db.Post.findAll({
         where: { userId },
         ...finalQuery,
+        include: [{ model: db.User }, { model: db.Category }],
         order,
       });
 
       return {
         list: queryRelatedPosts,
         qty: totalPostQty,
+        activePage,
       };
     }
   },
@@ -89,7 +96,6 @@ const Mutation = {
         return updated;
       }
     }
-    return null;
   },
 };
 
