@@ -3,6 +3,10 @@ const { Op } = require('sequelize');
 const { User, Post, Category } = require('../db/models');
 const imgFolderBase = './uploads';
 const order = [['createdAt', 'DESC']];
+const {
+  getFinalQueryObject,
+  formatWhereObj,
+} = require('../helpers/queryBuilder');
 
 const Query = {
   post: (root, { id }, context) => {
@@ -15,37 +19,22 @@ const Query = {
 
   posts: (root, { query }, context) => {
     const { id: userId } = context.user;
-    let whereObj = { userId };
-    const queryObj = {};
+    let whereObjParams = { userId };
+    let queryObjParams;
+    let whereObj;
+    let queryObj;
 
     if (query) {
-      const { page, limit, dateFrom, dateTo, search } = query;
-
-      whereObj.createdAt = {
-        [Op.between]: [dateFrom || 0, dateTo || Infinity],
-      };
-
-      if (limit) {
-        queryObj.limit = limit;
-      }
-      if (page) {
-        queryObj.offset = page * limit - limit;
-      }
-
-      if (search) {
-        whereObj = {
-          ...whereObj,
-          [Op.or]: [
-            { title: { [Op.like]: `%${search}%` } },
-            { text: { [Op.like]: `%${search}%` } },
-          ],
-        };
-      }
+      const { dateFrom, dateTo, search, page, limit } = query;
+      whereObjParams = { userId, dateFrom, dateTo, search };
+      queryObjParams = { page, limit };
     }
 
-    queryObj.where = whereObj;
-    queryObj.include = [{ model: User }, { model: Category }];
-    queryObj.order = order;
+    whereObj = whereObjParams && formatWhereObj(whereObjParams);
+    queryObj = getFinalQueryObject(queryObjParams, whereObj, [
+      { model: User },
+      { model: Category },
+    ]);
 
     return {
       list: Post.findAll(queryObj),
@@ -65,7 +54,11 @@ const Mutation = {
   },
   deletePosts: async (root, { query, postIds }, context) => {
     const { id: userId } = context.user;
-    const finalQuery = {};
+    let totalPostQty;
+    let whereObjParams = { userId };
+    let queryObjParams;
+    let whereObj;
+    let queryObj;
     let activePage;
 
     const foundRows = await Post.findAll({
@@ -85,29 +78,36 @@ const Mutation = {
         }
       });
 
-      const totalPostQty = await Post.count({ where: { userId } });
-
       if (query) {
-        const { limit, page } = query;
+        const { dateFrom, dateTo, search, page, limit } = query;
         activePage = page;
-        finalQuery.limit = limit;
-        finalQuery.offset = page * limit - limit;
+        whereObjParams = { userId, dateFrom, dateTo, search };
+        queryObjParams = { page, limit };
+
+        whereObj = whereObjParams && formatWhereObj(whereObjParams);
+        queryObj = getFinalQueryObject(queryObjParams, whereObj, [
+          { model: User },
+          { model: Category },
+        ]);
+
+        totalPostQty = await Post.count({ where: whereObj });
+
         const totalPages = Math.ceil(totalPostQty / limit);
 
         if (page > 1 && page > totalPages) {
-          finalQuery.offset = (page - 1) * limit - limit;
+          queryObj.offset = (page - 1) * limit - limit;
           activePage = page - 1;
         }
 
         if (activePage > 1 && activePage > totalPages) {
           activePage = totalPages;
-          finalQuery.offset = activePage * limit - limit;
+          queryObj.offset = activePage * limit - limit;
         }
       }
 
       const queryRelatedPosts = await Post.findAll({
-        where: { userId },
-        ...finalQuery,
+        where: whereObj,
+        ...queryObj,
         include: [{ model: User }, { model: Category }],
         order,
       });
