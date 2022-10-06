@@ -20,9 +20,11 @@ const Query = {
 
     if (query) {
       const { page, limit, dateFrom, dateTo, search } = query;
+
       whereObj.createdAt = {
         [Op.between]: [dateFrom || 0, dateTo || Infinity],
       };
+
       if (limit) {
         queryObj.limit = limit;
       }
@@ -95,6 +97,11 @@ const Mutation = {
         if (page > 1 && page > totalPages) {
           finalQuery.offset = (page - 1) * limit - limit;
           activePage = page - 1;
+        }
+
+        if (activePage > 1 && activePage > totalPages) {
+          activePage = totalPages;
+          finalQuery.offset = activePage * limit - limit;
         }
       }
 
