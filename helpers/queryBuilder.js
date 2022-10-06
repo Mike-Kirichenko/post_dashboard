@@ -15,8 +15,8 @@ exports.formatWhereObj = (params) => {
     whereObj = {
       ...whereObj,
       [Op.or]: [
-        { title: { [Op.like]: `%${search}%` } },
-        { text: { [Op.like]: `%${search}%` } },
+        { title: { [Op.iLike]: `%${search}%` } },
+        { text: { [Op.iLike]: `%${search}%` } },
       ],
     };
   }
