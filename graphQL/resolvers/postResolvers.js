@@ -1,12 +1,12 @@
 const fs = require('fs');
 const { Op } = require('sequelize');
-const { User, Post, Category } = require('../db/models');
+const { User, Post, Category } = require('../../db/models');
 const imgFolderBase = './uploads';
 const order = [['createdAt', 'DESC']];
 const {
   getFinalQueryObject,
   formatWhereObj,
-} = require('../helpers/queryBuilder');
+} = require('../../helpers/queryBuilder');
 
 const Query = {
   post: (root, { id }, context) => {
