@@ -1,3 +1,5 @@
+scalar Upload
+
 type Query {
   user(id: ID!): User
   post(id: ID!): Post
@@ -5,17 +7,15 @@ type Query {
   categories: [Category]
 }
 
-scalar Upload
-
 type Category {
   id: ID!
   name: String!
 }
 
 type File {
-  filename: String!
-  mimetype: String!
-  encoding: String!
+  filename: String
+  mimetype: String
+  encoding: String
 }
 
 type Mutation {

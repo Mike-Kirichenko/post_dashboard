@@ -1,13 +1,15 @@
 const fs = require('fs');
-const path = require('path');
+const { v4: uuidv4 } = require('uuid');
+const { parse } = require('path');
 const { Op } = require('sequelize');
 const { User, Post, Category } = require('../../db/models');
-const imgFolderBase = 'uploads';
 const order = [['createdAt', 'DESC']];
 const {
   getFinalQueryObject,
   formatWhereObj,
 } = require('../../helpers/queryBuilder');
+
+const { imgFolderBase } = require('../../helpers/constants');
 
 const Query = {
   post: (root, { id }, context) => {
@@ -48,13 +50,21 @@ const Mutation = {
   createPost: async (root, { input, file }, context) => {
     const { id: userId } = context.user;
 
-    const { createReadStream, filename, mimetype, encoding } = await file;
+    const { createReadStream, filename } = await file;
+
+    const { ext } = parse(filename);
+    const finalName = `${uuidv4()}${ext}`;
+
     const stream = createReadStream();
-    const fullPath = `${imgFolderBase}/posts/${filename}`;
+    const fullPath = `${imgFolderBase}/posts/${finalName}`;
     const out = fs.createWriteStream(fullPath);
     await stream.pipe(out);
 
-    const { id } = await Post.create({ ...input, img: fullPath, userId });
+    const { id } = await Post.create({
+      ...input,
+      img: `posts/${finalName}`,
+      userId,
+    });
 
     return await Post.findOne({
       where: { userId, id },
