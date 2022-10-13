@@ -5,13 +5,21 @@ type Query {
   categories: [Category]
 }
 
+scalar Upload
+
 type Category {
   id: ID!
   name: String!
 }
 
+type File {
+  filename: String!
+  mimetype: String!
+  encoding: String!
+}
+
 type Mutation {
-  createPost(input: CreatePostInput): Post
+  createPost(input: CreatePostInput, file: Upload): Post
   deletePosts(postIds: [ID], query: QueryObj): PostsData
   editPost(id: ID, input: EditPostInput): Post
 }

@@ -1,7 +1,8 @@
 const fs = require('fs');
+const path = require('path');
 const { Op } = require('sequelize');
 const { User, Post, Category } = require('../../db/models');
-const imgFolderBase = './uploads';
+const imgFolderBase = 'uploads';
 const order = [['createdAt', 'DESC']];
 const {
   getFinalQueryObject,
@@ -44,9 +45,17 @@ const Query = {
 };
 
 const Mutation = {
-  createPost: async (root, { input }, context) => {
+  createPost: async (root, { input, file }, context) => {
     const { id: userId } = context.user;
-    const { id } = await Post.create({ ...input, userId });
+
+    const { createReadStream, filename, mimetype, encoding } = await file;
+    const stream = createReadStream();
+    const fullPath = `${imgFolderBase}/posts/${filename}`;
+    const out = fs.createWriteStream(fullPath);
+    await stream.pipe(out);
+
+    const { id } = await Post.create({ ...input, img: fullPath, userId });
+
     return await Post.findOne({
       where: { userId, id },
       include: [{ model: User }, { model: Category }],
