@@ -13,7 +13,7 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJDb3JkZWxpYTY1QHlhaG9vLmNvbSIsImZpcnN0TmFtZSI6Ik1lcmNlZGVzIiwibGFzdE5hbWUiOiJWZXVtIiwiYXZhdGFyIjpudWxsLCJpYXQiOjE2NjQ4Nzg3NjgsImV4cCI6MTY2NDk2NTE2OH0.AX24Fz-h2qTi8I8r0y9dySKtUYqgogiXvlxTOEAMwNE",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJDb3JkZWxpYTY1QHlhaG9vLmNvbSIsImZpcnN0TmFtZSI6Ik1lcmNlZGVzIiwibGFzdE5hbWUiOiJWZXVtIiwiYXZhdGFyIjpudWxsLCJpYXQiOjE2NjU1NjEzMzgsImV4cCI6MTY2NTY0NzczOH0.3RLnRqSHELgCOoLWPhtiLU066ahyQM_z1R4f8m7XcGA",
 						"type": "text"
 					}
 				],
@@ -21,7 +21,7 @@
 					"mode": "graphql",
 					"graphql": {
 						"query": "query PostsQuery($query: QueryObj) {\n  posts(query: $query) {\n    list {\n      id\n      title\n      text\n      createdAt\n      updatedAt\n      img\n      category {\n        name\n      }\n      user {\n        firstName\n        lastName\n      }\n    },\n    qty\n  }\n}\n",
-						"variables": "{\"query\": {\"page\": 1, \"limit\": 25}}"
+						"variables": "{\n    \"query\": {\n        \"dateFrom\": \"2021-01-01\",\n        \"dateTo\": \"2022-10-01\",\n        \"limit\": 20\n    }\n}"
 					}
 				},
 				"url": {
@@ -76,7 +76,7 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJCaWxseV9Db3JtaWVyNkB5YWhvby5jb20iLCJpYXQiOjE2NjMyMzM2NzIsImV4cCI6MTY2MzMyMDA3Mn0.gvbOf_fDBJSUQoS4FnJMkpQD1jEwyOKlLLMbelbyNn8",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJDb3JkZWxpYTY1QHlhaG9vLmNvbSIsImZpcnN0TmFtZSI6Ik1lcmNlZGVzIiwibGFzdE5hbWUiOiJWZXVtIiwiYXZhdGFyIjpudWxsLCJpYXQiOjE2NjU1NjEzMzgsImV4cCI6MTY2NTY0NzczOH0.3RLnRqSHELgCOoLWPhtiLU066ahyQM_z1R4f8m7XcGA",
 						"type": "text"
 					}
 				],
@@ -84,16 +84,16 @@
 					"mode": "graphql",
 					"graphql": {
 						"query": "query PostQuery($id: ID!) {\n    post (id: $id) {\n        title\n        text\n        category {\n           id\n           name\n        }\n        user {\n           nickname\n        }\n    }\n}",
-						"variables": "{\"id\": 2}"
+						"variables": "{\"id\": 63}"
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/graphql",
+					"raw": "http://localhost:4000/api/graphql",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5000",
+					"port": "4000",
 					"path": [
 						"api",
 						"graphql"
@@ -109,7 +109,7 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJCaWxseV9Db3JtaWVyNkB5YWhvby5jb20iLCJpYXQiOjE2NjMyMzM2NzIsImV4cCI6MTY2MzMyMDA3Mn0.gvbOf_fDBJSUQoS4FnJMkpQD1jEwyOKlLLMbelbyNn8",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJDb3JkZWxpYTY1QHlhaG9vLmNvbSIsImZpcnN0TmFtZSI6Ik1lcmNlZGVzIiwibGFzdE5hbWUiOiJWZXVtIiwiYXZhdGFyIjpudWxsLCJpYXQiOjE2NjU1NjEzMzgsImV4cCI6MTY2NTY0NzczOH0.3RLnRqSHELgCOoLWPhtiLU066ahyQM_z1R4f8m7XcGA",
 						"type": "text"
 					}
 				],
@@ -117,16 +117,16 @@
 					"mode": "graphql",
 					"graphql": {
 						"query": "mutation CreatePost ($input: CreatePostInput){\n    post: createPost(input: $input) {\n      title\n      text\n      category {\n          name\n      }\n      user {\n          nickname\n      }\n    }\n  }",
-						"variables": "{\n    \"input\": {\n        \"categoryId\": 85,\n        \"title\": \"Lorem Ipsum test title\",\n        \"text\": \"Something About Lorem Ipsum!\"\n    }\n}"
+						"variables": "{\n    \"input\": {\n        \"categoryId\": 12,\n        \"title\": \"Lorem Ipsum test title\",\n        \"text\": \"Something About Lorem Ipsum!\"\n    }\n}"
 					}
 				},
 				"url": {
-					"raw": "http://localhost:5000/api/graphql",
+					"raw": "http://localhost:4000/api/graphql",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "5000",
+					"port": "4000",
 					"path": [
 						"api",
 						"graphql"
@@ -142,7 +142,7 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJDb3JkZWxpYTY1QHlhaG9vLmNvbSIsImZpcnN0TmFtZSI6Ik1lcmNlZGVzIiwibGFzdE5hbWUiOiJWZXVtIiwiYXZhdGFyIjpudWxsLCJpYXQiOjE2NjQ4Nzg3NjgsImV4cCI6MTY2NDk2NTE2OH0.AX24Fz-h2qTi8I8r0y9dySKtUYqgogiXvlxTOEAMwNE",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJDb3JkZWxpYTY1QHlhaG9vLmNvbSIsImZpcnN0TmFtZSI6Ik1lcmNlZGVzIiwibGFzdE5hbWUiOiJWZXVtIiwiYXZhdGFyIjpudWxsLCJpYXQiOjE2NjU2Njc1NDAsImV4cCI6MTY2NTc1Mzk0MH0.EPF0f0PBbcuoFGQ5629DRISiwfV_PNZLjRRyrnbXQ3o",
 						"type": "text"
 					}
 				],
@@ -150,7 +150,7 @@
 					"mode": "graphql",
 					"graphql": {
 						"query": "mutation DeletePosts ($postIds: [ID], $query: QueryObj){\n    withoutDeleted: deletePosts(postIds: $postIds, query: $query) {\n        list {\n            id\n            title\n            text\n            createdAt\n            updatedAt\n            img\n             category {\n                name\n            }\n            user {\n                firstName\n                lastName\n            }\n        },\n        qty\n        activePage\n    }\n}",
-						"variables": "{\n    \"postIds\": [\n        3561,\n        3530\n    ], \n    \"query\": {\"page\": 1, \"limit\": 25}\n}"
+						"variables": "{\n    \"postIds\": [\n        10\n    ], \n   \"query\": {\n        \"search\": \"hi\"\n    }\n}"
 					}
 				},
 				"url": {
@@ -193,6 +193,94 @@
 						"localhost"
 					],
 					"port": "5000",
+					"path": [
+						"api",
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-categories",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJDb3JkZWxpYTY1QHlhaG9vLmNvbSIsImZpcnN0TmFtZSI6Ik1lcmNlZGVzIiwibGFzdE5hbWUiOiJWZXVtIiwiYXZhdGFyIjpudWxsLCJpYXQiOjE2NjU1NjEzMzgsImV4cCI6MTY2NTY0NzczOH0.3RLnRqSHELgCOoLWPhtiLU066ahyQM_z1R4f8m7XcGA",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query CategoriesQuery {\n    categories {\n        id\n        name\n    }\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4000/api/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"api",
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create-post-with-photo",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJDb3JkZWxpYTY1QHlhaG9vLmNvbSIsImZpcnN0TmFtZSI6Ik1lcmNlZGVzIiwibGFzdE5hbWUiOiJWZXVtIiwiYXZhdGFyIjpudWxsLCJpYXQiOjE2NjU2Njc1NDAsImV4cCI6MTY2NTc1Mzk0MH0.EPF0f0PBbcuoFGQ5629DRISiwfV_PNZLjRRyrnbXQ3o",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "operations",
+							"value": "{\"query\": \"mutation CreatePost ($input: CreatePostInput, $file: Upload){post:createPost(input: $input, file: $file) {title \\n text \\n category {name}\\n img \\n user {nickname}}}\", \"variables\": {\"input\": {\"categoryId\": 12, \"title\": \"Lorem Ipsum test title\", \"text\":\"Something About Lorem Ipsum\"}}}",
+							"type": "text"
+						},
+						{
+							"key": "map",
+							"value": "{\"0\": [\"variables.file\"]}",
+							"type": "text"
+						},
+						{
+							"key": "0",
+							"type": "file",
+							"src": "/home/user/Desktop/296248_nI8SBQxWVj_spongebob_movie_wonderfulsponge.jpg"
+						},
+						{
+							"key": "",
+							"value": "",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:4000/api/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
 					"path": [
 						"api",
 						"graphql"

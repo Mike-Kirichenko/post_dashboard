@@ -1,15 +1,15 @@
-const fs = require('fs');
-const { v4: uuidv4 } = require('uuid');
-const { parse } = require('path');
-const { Op } = require('sequelize');
-const { User, Post, Category } = require('../../db/models');
-const order = [['createdAt', 'DESC']];
+const fs = require("fs");
+const { v4: uuidv4 } = require("uuid");
+const { parse } = require("path");
+const { Op } = require("sequelize");
+const { User, Post, Category } = require("../../db/models");
+const order = [["createdAt", "DESC"]];
 const {
   getFinalQueryObject,
   formatWhereObj,
-} = require('../../helpers/queryBuilder');
+} = require("../../helpers/queryBuilder");
 
-const { imgFolderBase } = require('../../helpers/constants');
+const { IMG_FOLDER_BASE } = process.env;
 
 const Query = {
   post: (root, { id }, context) => {
@@ -56,7 +56,7 @@ const Mutation = {
     const finalName = `${uuidv4()}${ext}`;
 
     const stream = createReadStream();
-    const fullPath = `${imgFolderBase}/posts/${finalName}`;
+    const fullPath = `${IMG_FOLDER_BASE}/posts/${finalName}`;
     const out = fs.createWriteStream(fullPath);
     await stream.pipe(out);
 
@@ -82,7 +82,7 @@ const Mutation = {
 
     const foundRows = await Post.findAll({
       where: { id: { [Op.in]: postIds }, userId },
-      attributes: ['img'],
+      attributes: ["img"],
     });
 
     const deleted = await Post.destroy({
@@ -92,8 +92,8 @@ const Mutation = {
     if (foundRows && deleted) {
       foundRows.forEach((row) => {
         const { img: imgPath } = row;
-        if (fs.existsSync(`${imgFolderBase}/${imgPath}`)) {
-          fs.unlinkSync(`${imgFolderBase}/${imgPath}`);
+        if (fs.existsSync(`${IMG_FOLDER_BASE}/${imgPath}`)) {
+          fs.unlinkSync(`${IMG_FOLDER_BASE}/${imgPath}`);
         }
       });
 
@@ -137,6 +137,11 @@ const Mutation = {
         activePage,
       };
     }
+    return {
+      list: [],
+      qty: totalPostQty,
+      activePage,
+    };
   },
   editPost: async (root, { id, input }, context) => {
     const { id: userId } = context.user;

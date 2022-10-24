@@ -23,7 +23,7 @@ const posts = [...Array(800)].map((post) => {
     text: faker.lorem.sentence(24),
     categoryId: Math.floor(Math.random() * 12) + 1,
     userId: Math.floor(Math.random() * 4) + 1,
-    img: faker.image.abstract(),
+    img: null,
     createdAt: createdAt.toISOString(),
     updatedAt: updatedAt.toISOString(),
   };
