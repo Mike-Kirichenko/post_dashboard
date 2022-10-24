@@ -19,7 +19,7 @@ type File {
 }
 
 type Mutation {
-  createPost(input: CreatePostInput, file: Upload): Post
+  createPost(input: CreatePostInput, file: Upload, query: QueryObj): PostsData
   deletePosts(postIds: [ID], query: QueryObj): PostsData
   editPost(id: ID, input: EditPostInput): Post
 }

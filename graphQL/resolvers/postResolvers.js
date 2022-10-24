@@ -12,7 +12,7 @@ const {
 const { IMG_FOLDER_BASE } = process.env;
 
 const Query = {
-  post: (root, { id }, context) => {
+  post: (_, { id }, context) => {
     const { id: userId } = context.user;
     return Post.findOne({
       where: { userId, id },
@@ -20,7 +20,7 @@ const Query = {
     });
   },
 
-  posts: (root, { query }, context) => {
+  posts: (_, { query }, context) => {
     const { id: userId } = context.user;
     let whereObjParams = { userId };
     let queryObjParams;
@@ -47,8 +47,14 @@ const Query = {
 };
 
 const Mutation = {
-  createPost: async (root, { input, file }, context) => {
+  createPost: async (_, { input, file, query }, context) => {
     const { id: userId } = context.user;
+
+    let activePage;
+    let whereObjParams = { userId };
+    let queryObjParams;
+    let whereObj;
+    let queryObj;
 
     const { createReadStream, filename } = await file;
 
@@ -58,7 +64,7 @@ const Mutation = {
     const stream = createReadStream();
     const fullPath = `${IMG_FOLDER_BASE}/posts/${finalName}`;
     const out = fs.createWriteStream(fullPath);
-    await stream.pipe(out);
+    const pictureUploaded = await stream.pipe(out);
 
     const { id } = await Post.create({
       ...input,
@@ -66,12 +72,28 @@ const Mutation = {
       userId,
     });
 
-    return await Post.findOne({
-      where: { userId, id },
-      include: [{ model: User }, { model: Category }],
-    });
+    if (id && pictureUploaded) {
+      if (query) {
+        const { dateFrom, dateTo, search, page, limit } = query;
+        whereObjParams = { userId, dateFrom, dateTo, search };
+        queryObjParams = { page, limit };
+        activePage = page ? page : 1;
+      }
+
+      whereObj = whereObjParams && formatWhereObj(whereObjParams);
+      queryObj = getFinalQueryObject(queryObjParams, whereObj, [
+        { model: User },
+        { model: Category },
+      ]);
+    }
+
+    return {
+      list: Post.findAll(queryObj),
+      qty: Post.count({ where: whereObj }),
+      activePage,
+    };
   },
-  deletePosts: async (root, { query, postIds }, context) => {
+  deletePosts: async (_, { query, postIds }, context) => {
     const { id: userId } = context.user;
     let totalPostQty;
     let whereObjParams = { userId };
@@ -143,7 +165,7 @@ const Mutation = {
       activePage,
     };
   },
-  editPost: async (root, { id, input }, context) => {
+  editPost: async (_, { id, input }, context) => {
     const { id: userId } = context.user;
     if (input) {
       const [updated] = await Post.update(input, { where: { id, userId } });
